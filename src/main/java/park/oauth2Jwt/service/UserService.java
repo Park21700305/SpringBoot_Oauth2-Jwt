@@ -3,8 +3,11 @@ package park.oauth2Jwt.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import park.oauth2Jwt.domain.User;
 import park.oauth2Jwt.dto.AddUserRequest;
 import park.oauth2Jwt.repository.UserRepository;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -12,22 +15,14 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public Long save(AddUserRequest dto) {
+    //    @Transactional
+    public User save(AddUserRequest dto) {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-
-        return userRepository.save(User.builder()
-                .email(dto.getEmail())
-                .password(encoder.encode(dto.getPassword()))
-                .build()).getId();
+        return userRepository.save(dto.toEntity());
     }
 
-    public User findById(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("Unexpected user"));
+    public List<User> findAll() {
+        return userRepository.findAll();
     }
 
-    public User findByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("Unexpected user"));
-    }
 }

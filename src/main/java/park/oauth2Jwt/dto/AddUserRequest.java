@@ -1,8 +1,18 @@
 package park.oauth2Jwt.dto;
 
+import park.oauth2Jwt.domain.User;
+
 import java.util.regex.Pattern;
 
-public record AddUserRequest(String email, String password) {
+public record AddUserRequest(String email, String password, String nickname) {
+
+    public User toEntity() {
+        return User.builder()
+                .email(email)
+                .password(password)
+                .nickname(nickname)
+                .build();
+    }
 
     // 컴팩트 생성자를 사용하여 유효성 검사 수행
     public AddUserRequest {
